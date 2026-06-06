@@ -16,3 +16,6 @@ miniprogram/
 cloudfunctions/
 project.config.json
 project.private.config.json
+
+# QR code exports
+*.png

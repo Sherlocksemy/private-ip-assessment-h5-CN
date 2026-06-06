@@ -244,7 +244,7 @@ async function submitAssessment() {
     const payload = await response.json();
     if (!response.ok) throw new Error(payload.message || "提交失败");
     state.result = payload.result || localResult;
-    state.saveStatus = payload.saved ? "已保存到顾问后台表格" : "已生成结果，配置Google Sheets后会自动保存";
+    state.saveStatus = payload.saved ? "已保存到飞书多维表格" : "已生成结果，配置飞书多维表格后会自动保存";
   } catch (error) {
     state.saveStatus = "已生成本地结果，暂未写入后台表格";
   }
