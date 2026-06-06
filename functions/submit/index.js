@@ -2,6 +2,13 @@ const { questions, scoreAssessment } = require("./assessment.cjs");
 
 exports.main = async (event) => {
   try {
+    console.log("submit:start", {
+      hasAppId: Boolean(process.env.FEISHU_APP_ID),
+      hasAppSecret: Boolean(process.env.FEISHU_APP_SECRET),
+      hasBitableToken: Boolean(process.env.FEISHU_BITABLE_APP_TOKEN),
+      hasTableId: Boolean(process.env.FEISHU_TABLE_ID)
+    });
+
     const request = normalizeRequest(event);
 
     if (request.method === "OPTIONS") {
@@ -28,7 +35,12 @@ exports.main = async (event) => {
     );
 
     if (hasFeishuConfig) {
-      await appendToFeishuBitable(buildFeishuFields({ profile, answers, channel, result }));
+      const feishuPayload = await appendToFeishuBitable(buildFeishuFields({ profile, answers, channel, result }));
+      console.log("submit:feishu-success", {
+        recordId: feishuPayload?.data?.record?.record_id || feishuPayload?.data?.record_id || ""
+      });
+    } else {
+      console.log("submit:feishu-skipped-missing-env");
     }
 
     return json({
@@ -119,9 +131,16 @@ async function appendToFeishuBitable(fields) {
   );
 
   const payload = await feishuResponse.json();
+  console.log("submit:feishu-response", {
+    status: feishuResponse.status,
+    code: payload.code,
+    msg: payload.msg
+  });
   if (!feishuResponse.ok || payload.code !== 0) {
     throw new Error(`飞书多维表格写入失败：${JSON.stringify(payload)}`);
   }
+
+  return payload;
 }
 
 async function getTenantAccessToken() {
@@ -137,6 +156,11 @@ async function getTenantAccessToken() {
   });
 
   const payload = await tokenResponse.json();
+  console.log("submit:token-response", {
+    status: tokenResponse.status,
+    code: payload.code,
+    msg: payload.msg
+  });
   if (!tokenResponse.ok || payload.code !== 0) {
     throw new Error(`飞书授权失败：${JSON.stringify(payload)}`);
   }
