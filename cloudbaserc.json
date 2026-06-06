@@ -1,5 +1,5 @@
 {
-  "envId": "{{CLOUDBASE_ENV_ID}}",
+  "envId": "demo-h5-d3g6xd0kz714991d4",
   "framework": {
     "name": "private-ip-assessment-h5-cn",
     "plugins": {
