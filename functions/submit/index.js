@@ -188,8 +188,9 @@ function response(statusCode, body, headers = {}) {
 }
 
 function formatDate(date) {
+  const chinaTime = new Date(date.getTime() + 8 * 60 * 60 * 1000);
   const pad = (value) => String(value).padStart(2, "0");
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(
-    date.getMinutes()
-  )}:${pad(date.getSeconds())}`;
+  return `${chinaTime.getUTCFullYear()}-${pad(chinaTime.getUTCMonth() + 1)}-${pad(
+    chinaTime.getUTCDate()
+  )} ${pad(chinaTime.getUTCHours())}:${pad(chinaTime.getUTCMinutes())}:${pad(chinaTime.getUTCSeconds())}`;
 }
