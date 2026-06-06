@@ -4,12 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --host 0.0.0.0",
-    "build": "vite build",
-    "preview": "vite preview --host 0.0.0.0"
+    "dev": "node server.js",
+    "start": "node server.js",
+    "build": "node scripts/build-standalone.js",
+    "preview": "node server.js"
   },
   "dependencies": {
-    "vite": "^6.0.7"
   },
   "devDependencies": {}
 }

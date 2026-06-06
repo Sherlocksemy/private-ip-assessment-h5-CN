@@ -1,12 +1,14 @@
 # 私域IP商业变现测评 H5
 
-这是一个面向中国大陆用户访问的 H5 测评网页。客户打开链接或扫码填写测评，提交后看到简易报告；完整报告写入飞书多维表格，顾问可在飞书中查看、筛选和导出。
+这是一个面向中国大陆用户访问测试的 H5 测评网页。客户打开链接或扫码填写测评，提交后看到简易报告；完整报告写入飞书多维表格，顾问可在飞书中查看、筛选和导出。
 
 ## 当前方案
 
-- 前端部署：腾讯云 EdgeOne Pages
+- 部署平台：Zeabur
+- 运行方式：Node.js 服务
+- 静态页面：`index.html` + `src/`
+- 提交接口：`POST /api/submit`
 - 数据后台：飞书多维表格
-- 提交接口：EdgeOne Pages Functions
 - 渠道追踪：支持 `?channel=朋友圈`、`?channel=社群`、`?channel=私聊`、`?channel=直播间`
 
 ## 功能
@@ -16,12 +18,22 @@
 - 结果页：总分、等级、四维得分、优势维度、短板维度、简易建议。
 - 完整报告：写入飞书多维表格，不直接展示给客户。
 
-## 本地预览
-
-可以直接打开 `demo.html` 预览，也可以用本地 Node 启动静态服务：
+## 本地运行
 
 ```bash
-node local-server.js
+npm start
+```
+
+或者直接用 Node：
+
+```bash
+node server.js
+```
+
+默认本地地址：
+
+```text
+http://localhost:3000
 ```
 
 ## 飞书多维表格字段
@@ -47,9 +59,9 @@ node local-server.js
 原始答案
 ```
 
-## EdgeOne 环境变量
+## Zeabur 环境变量
 
-在 EdgeOne Pages 项目中配置这些环境变量：
+在 Zeabur 项目服务中配置这些环境变量：
 
 ```text
 FEISHU_APP_ID
@@ -65,23 +77,25 @@ FEISHU_TABLE_ID
 - `FEISHU_TABLE_ID` 来自多维表格数据表 ID。
 - 飞书应用需要开通多维表格记录写入权限，并发布/生效。
 
-## EdgeOne 部署
+## Zeabur 部署
 
-1. 在 EdgeOne Pages 新建项目并连接 GitHub 仓库。
-2. 构建命令填 `npm run build`。
-3. 输出目录填 `dist`。
-4. 配置飞书环境变量。
-5. 部署完成后，用正式链接测试提交。
+1. 在 Zeabur 新建 Project。
+2. 选择 Deploy from GitHub。
+3. 导入仓库 `Sherlocksemy/private-ip-assessment-h5-CN`。
+4. 服务类型选择 Node.js。
+5. 启动命令使用 `npm start`。
+6. 配置飞书环境变量。
+7. 部署完成后测试提交。
 
 ## 渠道二维码
 
 部署后可以为不同渠道生成不同链接：
 
 ```text
-https://your-edgeone-domain/?channel=朋友圈
-https://your-edgeone-domain/?channel=社群
-https://your-edgeone-domain/?channel=私聊
-https://your-edgeone-domain/?channel=直播间
+https://your-zeabur-domain/?channel=朋友圈
+https://your-zeabur-domain/?channel=社群
+https://your-zeabur-domain/?channel=私聊
+https://your-zeabur-domain/?channel=直播间
 ```
 
 把这些链接分别生成二维码，客户扫码填写后，飞书多维表格中会记录对应来源渠道。
@@ -89,4 +103,4 @@ https://your-edgeone-domain/?channel=直播间
 ## 保留文件
 
 - `miniprogram/` 和 `cloudfunctions/` 是早期小程序原型，已通过 `.gitignore` 排除。
-- `api/submit.js` 是早期 Vercel + Google Sheets 接口，当前 EdgeOne 方案使用 `edge-functions/api/submit.js`。
+- `demo.html` 是本地预览单文件，已通过 `.gitignore` 排除。
