@@ -1,13 +1,11 @@
 # 私域IP商业变现测评 H5
 
-这是一个面向中国大陆用户访问测试的 H5 测评网页。客户打开链接或扫码填写测评，提交后看到简易报告；完整报告写入飞书多维表格，顾问可在飞书中查看、筛选和导出。
+这是一个面向中国大陆用户访问的 H5 测评网页。客户打开链接或扫码填写测评，提交后看到简易报告；完整报告写入飞书多维表格，顾问可在飞书中查看、筛选和导出。
 
 ## 当前方案
 
-- 部署平台：Zeabur
-- 运行方式：Node.js 服务
-- 静态页面：`index.html` + `src/`
-- 提交接口：`POST /api/submit`
+- 静态页面托管：腾讯云 CloudBase 静态网站托管
+- 提交接口：CloudBase 云函数 `submit`
 - 数据后台：飞书多维表格
 - 渠道追踪：支持 `?channel=朋友圈`、`?channel=社群`、`?channel=私聊`、`?channel=直播间`
 
@@ -18,23 +16,19 @@
 - 结果页：总分、等级、四维得分、优势维度、短板维度、简易建议。
 - 完整报告：写入飞书多维表格，不直接展示给客户。
 
-## 本地运行
+## CloudBase 部署文件
 
-```bash
-npm start
+- `index.html`、`src/`：静态页面。
+- `functions/submit/`：CloudBase 云函数，负责评分和写入飞书。
+- `cloudbaserc.json`：CloudBase Framework 配置模板。
+
+`cloudbaserc.json` 里的 `envId` 目前是占位符：
+
+```json
+"envId": "{{CLOUDBASE_ENV_ID}}"
 ```
 
-或者直接用 Node：
-
-```bash
-node server.js
-```
-
-默认本地地址：
-
-```text
-http://localhost:3000
-```
+部署前需要替换为你的 CloudBase 环境 ID。
 
 ## 飞书多维表格字段
 
@@ -59,9 +53,9 @@ http://localhost:3000
 原始答案
 ```
 
-## Zeabur 环境变量
+## CloudBase 云函数环境变量
 
-在 Zeabur 项目服务中配置这些环境变量：
+在 CloudBase 云函数 `submit` 中配置这些环境变量：
 
 ```text
 FEISHU_APP_ID
@@ -77,25 +71,49 @@ FEISHU_TABLE_ID
 - `FEISHU_TABLE_ID` 来自多维表格数据表 ID。
 - 飞书应用需要开通多维表格记录写入权限，并发布/生效。
 
-## Zeabur 部署
+## 前端提交地址
 
-1. 在 Zeabur 新建 Project。
-2. 选择 Deploy from GitHub。
-3. 导入仓库 `Sherlocksemy/private-ip-assessment-h5-CN`。
-4. 服务类型选择 Node.js。
-5. 启动命令使用 `npm start`。
-6. 配置飞书环境变量。
-7. 部署完成后测试提交。
+前端默认提交到：
+
+```text
+/api/submit
+```
+
+如果 CloudBase 控制台给你的云函数 HTTP 访问地址不是这个路径，可以在 `index.html` 中加入配置：
+
+```html
+<script>
+  window.APP_CONFIG = {
+    submitUrl: "你的CloudBase云函数HTTP访问地址"
+  };
+</script>
+```
+
+这段脚本需要放在 `src/plain-app.js` 之前。
+
+## 本地预览
+
+本地可以用 Node 服务预览：
+
+```bash
+node server.js
+```
+
+默认地址：
+
+```text
+http://localhost:3000
+```
 
 ## 渠道二维码
 
 部署后可以为不同渠道生成不同链接：
 
 ```text
-https://your-zeabur-domain/?channel=朋友圈
-https://your-zeabur-domain/?channel=社群
-https://your-zeabur-domain/?channel=私聊
-https://your-zeabur-domain/?channel=直播间
+https://your-cloudbase-domain/?channel=朋友圈
+https://your-cloudbase-domain/?channel=社群
+https://your-cloudbase-domain/?channel=私聊
+https://your-cloudbase-domain/?channel=直播间
 ```
 
 把这些链接分别生成二维码，客户扫码填写后，飞书多维表格中会记录对应来源渠道。
@@ -103,4 +121,5 @@ https://your-zeabur-domain/?channel=直播间
 ## 保留文件
 
 - `miniprogram/` 和 `cloudfunctions/` 是早期小程序原型，已通过 `.gitignore` 排除。
+- `server.js` 仅用于本地预览，CloudBase 静态托管不会上传它。
 - `demo.html` 是本地预览单文件，已通过 `.gitignore` 排除。

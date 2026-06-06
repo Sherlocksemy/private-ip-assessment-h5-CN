@@ -1,0 +1,51 @@
+{
+  "envId": "{{CLOUDBASE_ENV_ID}}",
+  "framework": {
+    "name": "private-ip-assessment-h5-cn",
+    "plugins": {
+      "client": {
+        "use": "@cloudbase/framework-plugin-website",
+        "inputs": {
+          "outputPath": ".",
+          "ignore": [
+            ".git",
+            ".gitignore",
+            ".env",
+            ".env.local",
+            ".npm-cache",
+            ".tmp",
+            ".tools",
+            ".env.example",
+            "README.md",
+            "package.json",
+            "vercel.json",
+            "cloudbaserc.json",
+            "node_modules",
+            "miniprogram",
+            "cloudfunctions",
+            "functions",
+            "scripts",
+            "demo.html",
+            "local-server.js",
+            "server.js",
+            "*.png"
+          ]
+        }
+      },
+      "submit": {
+        "use": "@cloudbase/framework-plugin-function",
+        "inputs": {
+          "functionRootPath": "functions",
+          "functions": [
+            {
+              "name": "submit",
+              "timeout": 10,
+              "runtime": "Nodejs18.15",
+              "handler": "index.main"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

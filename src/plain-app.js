@@ -11,6 +11,7 @@ const state = {
 
 const root = document.getElementById("root");
 const scoreOptions = [1, 2, 3, 4, 5];
+const submitUrl = window.APP_CONFIG?.submitUrl || "/api/submit";
 
 function render() {
   if (state.step === "home") renderHome();
@@ -232,7 +233,7 @@ async function submitAssessment() {
   render();
 
   try {
-    const response = await fetch("/api/submit", {
+    const response = await fetch(submitUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
