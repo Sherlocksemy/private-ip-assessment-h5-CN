@@ -94,7 +94,7 @@ function buildFeishuFields({ profile, answers, channel, result }) {
     result.dimensionScores.map((dimension) => [dimension.key, dimension.score])
   );
 
-  return {
+  const fields = {
     提交时间: formatDate(new Date()),
     客户昵称: profile.nickname,
     "微信号/手机号": profile.contact,
@@ -112,6 +112,8 @@ function buildFeishuFields({ profile, answers, channel, result }) {
     完整报告: result.fullReport,
     原始答案: JSON.stringify(answers)
   };
+  console.log("submit:formatted-time", fields.提交时间);
+  return fields;
 }
 
 async function appendToFeishuBitable(fields) {
@@ -188,9 +190,21 @@ function response(statusCode, body, headers = {}) {
 }
 
 function formatDate(date) {
-  const chinaTime = new Date(date.getTime() + 8 * 60 * 60 * 1000);
-  const pad = (value) => String(value).padStart(2, "0");
-  return `${chinaTime.getUTCFullYear()}-${pad(chinaTime.getUTCMonth() + 1)}-${pad(
-    chinaTime.getUTCDate()
-  )} ${pad(chinaTime.getUTCHours())}:${pad(chinaTime.getUTCMinutes())}:${pad(chinaTime.getUTCSeconds())}`;
+  const parts = new Intl.DateTimeFormat("zh-CN", {
+    timeZone: "Asia/Shanghai",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false
+  })
+    .formatToParts(date)
+    .reduce((result, part) => {
+      result[part.type] = part.value;
+      return result;
+    }, {});
+
+  return `${parts.year}-${parts.month}-${parts.day} ${parts.hour}:${parts.minute}:${parts.second}`;
 }
